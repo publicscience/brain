@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, request, url_for
+from flask import Blueprint, render_template, redirect, request, url_for, jsonify
 from flask.views import MethodView
 from flask.ext.mongoengine.wtf import model_form
 from app import app
@@ -54,11 +54,13 @@ class MentorAPI(MethodView):
             mentor.save()
             return redirect(url_for('mentor_api'))
 
-        return render_template('mentors/detail.html', **context)
+        return redirect(url_for('mentor_api'))
 
     def delete(self, username):
         context = self.get_context(username)
         mentor = context.get('mentor')
         mentor.delete()
+
+        return jsonify({'success':True})
 
 register_api(MentorAPI, 'mentor_api', '/mentors/', id='username', id_type='string')

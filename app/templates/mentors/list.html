@@ -10,8 +10,10 @@
         </div>
     </form>
 
+    <ul>
     {% for mentor in mentors %}
-        {{ mentor.username }}
+        <li>{{ mentor.username }} <a href="{{ url_for('mentor_api', username=mentor.username) }}" data-method='delete'>delete</a></li>
     {% endfor %}
+    </ul>
 
 {% endblock %}
