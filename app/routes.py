@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, request, url_for, jsonif
 from flask.views import MethodView
 from flask.ext.mongoengine.wtf import model_form
 from app import app
-from app.models import Mentor
+from app.models import Muse
 
 # Landing page
 @app.route('/')
@@ -21,15 +21,15 @@ def register_api(view, endpoint, url, id='id', id_type='int'):
     app.add_url_rule('%s<%s:%s>' % (url, id_type, id), view_func=view_func, methods=['GET', 'PUT', 'DELETE'])
 
 
-class MentorAPI(MethodView):
-    form = model_form(Mentor, exclude=['created_at'])
+class MuseAPI(MethodView):
+    form = model_form(Muse, exclude=['created_at'])
 
     def get_context(self, username):
-        mentor = Mentor.objects.get_or_404(username=username)
+        muse = Muse.objects.get_or_404(username=username)
         form = self.form(request.form)
 
         context = {
-                'mentor': mentor,
+                'muse': muse,
                 'form': form
         }
         return context
@@ -37,30 +37,30 @@ class MentorAPI(MethodView):
     def get(self, username):
         # List view
         if username is None:
-            mentors = Mentor.objects.all()
+            muses = Muse.objects.all()
             form = self.form(request.form)
-            return render_template('mentors/list.html', mentors=mentors, form=form)
+            return render_template('muses/list.html', muses=muses, form=form)
         # Detail view
         else:
             context = self.get_context(username)
-            return render_template('mentors/detail.html', **context)
+            return render_template('muses/detail.html', **context)
 
     def post(self):
         form = self.form(request.form)
 
         if form.validate():
-            mentor = Mentor()
-            form.populate_obj(mentor)
-            mentor.save()
-            return redirect(url_for('mentor_api'))
+            muse = Muse()
+            form.populate_obj(muse)
+            muse.save()
+            return redirect(url_for('muse_api'))
 
-        return redirect(url_for('mentor_api'))
+        return redirect(url_for('muse_api'))
 
     def delete(self, username):
         context = self.get_context(username)
-        mentor = context.get('mentor')
-        mentor.delete()
+        muse = context.get('muse')
+        muse.delete()
 
         return jsonify({'success':True})
 
-register_api(MentorAPI, 'mentor_api', '/mentors/', id='username', id_type='string')
+register_api(MuseAPI, 'muse_api', '/muses/', id='username', id_type='string')

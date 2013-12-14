@@ -11,8 +11,8 @@
     </form>
 
     <ul>
-    {% for mentor in mentors %}
-        <li>{{ mentor.username }} <a href="{{ url_for('mentor_api', username=mentor.username) }}" data-method='delete'>delete</a></li>
+    {% for muse in muses %}
+        <li>{{ muse.username }} <a href="{{ url_for('muse_api', username=muse.username) }}" data-method='delete'>delete</a></li>
     {% endfor %}
     </ul>
 

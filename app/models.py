@@ -12,9 +12,9 @@ class Tweet(db.Document):
     }
 
 
-class Mentor(db.Document):
+class Muse(db.Document):
     """
-    A mentor is a Twitter user
+    A muse is a Twitter user
     which the Brain learns from.
     """
     created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
