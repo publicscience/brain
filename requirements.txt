@@ -1,0 +1,12 @@
+Flask==0.10.1
+Flask-WTF==0.9.3
+Jinja2==2.7.1
+MarkupSafe==0.18
+WTForms==1.0.5
+Werkzeug==0.9.4
+itsdangerous==0.23
+numpy==1.8.0
+scikit-learn==0.14.1
+scipy==0.13.2
+git+git://github.com/nltk/nltk.git
+git+git://github.com/puzzlet/tweepy.git

@@ -1,0 +1,26 @@
+{
+    "curly": true,
+    "eqeqeq": true,
+    "indent": false,
+    "latedef": true,
+    "quotmark": "single",
+    "undef": true,
+    "unused": true,
+    "strict": true,
+    "camelcase": true,
+    "bitwise": true,
+    "newcap": true,
+    "smarttabs": true,
+    "trailing": true,
+    "immed": true,
+    "eqnull": true,
+    "browser": true,
+    "devel": true,
+    "globals": {
+        "jQuery": true,
+        "$": true,
+        "requirejs": true,
+        "require": true,
+        "define": true
+    }
+}

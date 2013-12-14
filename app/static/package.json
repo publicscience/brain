@@ -1,0 +1,23 @@
+{
+  "name": "brain",
+  "version": "0.0.1",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-contrib-sass": "*",
+    "grunt-contrib-jade": "*",
+    "grunt-contrib-connect": "*",
+    "grunt-contrib-copy": "*",
+    "grunt-text-replace": "*",
+    "grunt-shell": "*",
+    "grunt-contrib-imagemin": "*",
+    "grunt-requirejs": "*",
+    "grunt-contrib-clean": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-cssmin": "*",
+    "bower": "*",
+    "grunt-bower-requirejs": "*",
+    "grunt-contrib-csslint": "*"
+  }
+}
