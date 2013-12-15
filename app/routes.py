@@ -2,7 +2,8 @@ from flask import Blueprint, render_template, redirect, request, url_for, jsonif
 from flask.views import MethodView
 from flask.ext.mongoengine.wtf import model_form
 from app import app
-from .models import Muse, Tweet, Config
+from app.models import Muse, Tweet, Config
+from app.auth import requires_auth
 
 # Landing page
 @app.route('/')
@@ -75,6 +76,7 @@ register_api(MuseAPI, 'muse_api', '/muses/', id='username', id_type='string')
 class ConfigAPI(MethodView):
     form = model_form(Config, exclude=['created_at'])
 
+    #@requires_auth
     def get(self):
         config = Config.objects[0]
         form = self.form(request.form, obj=config)
