@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, request, url_for, jsonif
 from flask.views import MethodView
 from flask.ext.mongoengine.wtf import model_form
 from app import app
-from app.models import Muse
+from .models import Muse, Tweet
 
 # Landing page
 @app.route('/')
@@ -59,6 +59,12 @@ class MuseAPI(MethodView):
     def delete(self, username):
         context = self.get_context(username)
         muse = context.get('muse')
+
+        # Fetch and clear out this user's tweets.
+        tweets = Tweet.objects(username=username)
+        for tweet in tweets:
+            tweet.delete()
+
         muse.delete()
 
         return jsonify({'success':True})
