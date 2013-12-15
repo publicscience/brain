@@ -27,3 +27,18 @@ class Muse(db.Document):
             'indexes': ['-created_at', 'username'],
             'ordering': ['-created_at']
     }
+
+class Config(db.Document):
+    """
+    Configuration for the Brain.
+    """
+
+    # Retweet probability threshold.
+    retweet_threshold = db.FloatField(required=True, default=0.9)
+
+    # Maximum activity (tweets + retweets) in the active time interval.
+    max_activity = db.IntField(required=True, default=10)
+
+    meta = {
+            'max_documents': 1
+    }

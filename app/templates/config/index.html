@@ -1,0 +1,13 @@
+{% import "_forms.html" as forms %}
+
+{% extends 'layout.html' %}
+{% block content %}
+
+    <form action="." method="post">
+        {{ forms.render(form) }}
+        <div class="actions">
+            <input type="submit" value="Save">
+        </div>
+    </form>
+
+{% endblock %}

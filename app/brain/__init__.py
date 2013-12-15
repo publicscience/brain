@@ -1,13 +1,11 @@
 from . import twitter
 from .classifier import Classifier
 from ..models import Muse, Tweet
+from .. import config
 
 # Load the classifier.
 # Loaded here so we can keep it in memory.
 CLS = Classifier()
-
-THRESHOLD = 0.9
-MAX_ACTIVITY = 10
 
 def ponder():
     """
@@ -62,7 +60,6 @@ def _process_muse(muse):
             t.save()
     return tweets
 
-j
 def _consider_retweets(tweets):
     """
     Retweets if positive
@@ -71,7 +68,7 @@ def _consider_retweets(tweets):
     """
     txts = _get_tweet_texts(tweets)
     for idx, doc_probs in enumerate(CLS.classify(txts)):
-        if doc[1] > THRESHOLD:
+        if doc[1] > config().threshold:
             twitter.retweet(tweets[idx]['id'])
 
 
@@ -80,4 +77,3 @@ def _get_tweet_texts(tweets):
     Pulls out the content of a list of Tweets.
     """
     return [tweet['body'] for tweet in tweets]
-

@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, request, url_for, jsonif
 from flask.views import MethodView
 from flask.ext.mongoengine.wtf import model_form
 from app import app
-from .models import Muse, Tweet
+from .models import Muse, Tweet, Config
 
 # Landing page
 @app.route('/')
@@ -70,3 +70,25 @@ class MuseAPI(MethodView):
         return jsonify({'success':True})
 
 register_api(MuseAPI, 'muse_api', '/muses/', id='username', id_type='string')
+
+
+class ConfigAPI(MethodView):
+    form = model_form(Config, exclude=['created_at'])
+
+    def get(self):
+        config = Config.objects[0]
+        form = self.form(request.form, obj=config)
+        return render_template('config/index.html', config=config, form=form)
+
+    def post(self):
+        config = Config.objects[0]
+        form = self.form(request.form, obj=config)
+
+        if form.validate():
+            form.populate_obj(config)
+            config.save()
+            return redirect(url_for('config_api'))
+
+        return redirect(url_for('config_api'))
+config_api = ConfigAPI.as_view('config_api')
+app.add_url_rule('/config/', view_func=config_api, methods=['GET', 'POST'])
