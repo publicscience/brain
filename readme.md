@@ -39,17 +39,23 @@ $ python application.py
 ```
 
 Check out the site at `localhost:5000` (by default).
+
 The important endpoints at the moment are `/muses/` and `/config/`.
 
 
 ## Twitter API
 To setup Twitter API access for your Twitter account:
+
 1. Authorize Twitter development access to your account [through
    here](https://dev.twitter.com/apps).
+
 2. Register your application through that process.
+
 3. On your app's page in the Twitter dev site, set its `Access level` to
    `Read and write`.
+
 4. Then generate an access token for your app.
+
 5. Set the required values in `app/brain/config.json`.
 
 
