@@ -1,7 +1,7 @@
-from . import twitter
-from .classifier import Classifier
-from ..models import Muse, Tweet
-from .. import config
+from app.brain import twitter
+from app.brain.classifier import Classifier
+from app.models import Muse, Tweet
+from app import config
 
 # Load the classifier.
 # Loaded here so we can keep it in memory.
@@ -47,17 +47,16 @@ def _process_muse(muse):
     creating Tweet objects
     and saving them to the db.
     """
-    for muse in Muse.objects(negative=False):
-        username = muse.username
-        tweets = twitter.tweets(username=username)
-        for tweet in tweets:
-            data = {
-                    'body': tweet['body'],
-                    'id': tweet['id'],
-                    'username': username
-            }
-            t = Tweet(**data)
-            t.save()
+    username = muse.username
+    tweets = twitter.tweets(username=username)
+    for tweet in tweets:
+        data = {
+                'body': tweet['body'],
+                'id': tweet['id'],
+                'username': username
+        }
+        t = Tweet(**data)
+        t.save()
     return tweets
 
 def _consider_retweets(tweets):
