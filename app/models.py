@@ -3,7 +3,7 @@ from app import db
 
 class Tweet(db.Document):
     created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
-    id = db.IntField(required=True, unique=True)
+    tid = db.IntField(required=True, unique=True)
     body = db.StringField(required=True, unique=True)
     username = db.StringField(required=True, max_length=50)
 

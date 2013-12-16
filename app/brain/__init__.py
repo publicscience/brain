@@ -1,7 +1,7 @@
 from app.brain import twitter
 from app.brain.classifier import Classifier
 from app.models import Muse, Tweet
-from app import config
+from app.config import config
 
 # Load the classifier.
 # Loaded here so we can keep it in memory.
@@ -52,7 +52,7 @@ def _process_muse(muse):
     for tweet in tweets:
         data = {
                 'body': tweet['body'],
-                'id': tweet['id'],
+                'tid': tweet['tid'],
                 'username': username
         }
         t = Tweet(**data)
@@ -67,8 +67,8 @@ def _consider_retweets(tweets):
     """
     txts = _get_tweet_texts(tweets)
     for idx, doc_probs in enumerate(CLS.classify(txts)):
-        if doc[1] > config().threshold:
-            twitter.retweet(tweets[idx]['id'])
+        if doc_probs[1] > config().threshold:
+            twitter.retweet(tweets[idx]['tid'])
 
 
 def _get_tweet_texts(tweets):

@@ -27,7 +27,7 @@ def tweets(username):
     return [
             {
                 'body': tweet.text.encode('utf-8'),
-                'id': tweet.id
+                'tid': tweet.id
             }
             for tweet in api.user_timeline(screen_name=username, count=200)
             ]
