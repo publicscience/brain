@@ -1,4 +1,3 @@
-from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
 import string, sys
 
@@ -102,17 +101,19 @@ class Markov():
             stops = stop_words
 
         # Tokenize
-        for sentence in sent_tokenize(doc):
-            for token in word_tokenize(sentence):
+        # This is a very naive tokenizer
+        # i.e. it keeps in periods and punctuation,
+        # since we need those features to generate
+        # convincing speech.
+        for token in doc.split(' '):
+            # This saves memory by having
+            # duplicate strings just point to the same memory.
+            token = sys.intern(token)
 
-                # This saves memory by having
-                # duplicate strings just point to the same memory.
-                token = sys.intern(token)
-
-                # Ignore punctuation and stopwords
-                if token in stops or stop_rule(token):
-                    continue
-                tokens.append(token)
+            # Ignore punctuation and stopwords
+            if token in stops or stop_rule(token):
+                continue
+            tokens.append(token)
         return tokens
 
     def generate(self, seed):

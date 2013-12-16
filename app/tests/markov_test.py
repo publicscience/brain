@@ -37,6 +37,8 @@ class MarkovTest(unittest.TestCase):
         self.assertEqual(ngrams, expected)
 
     def test_train(self):
+        # Test ignoring RT and @ mentions.
+        tweet =  ' '.join(['RT', self.doc, '@foo'])
         expected = {
                 ('is', 'a', 'test'): [1, {'<STOP>': 1}],
                 ('<START>', 'hey', 'this'): [1, {'is': 1}],
@@ -44,7 +46,7 @@ class MarkovTest(unittest.TestCase):
                 ('this', 'is', 'a'): [1, {'test': 1}]
         }
 
-        self.m.train([self.doc])
+        self.m.train([tweet])
         self.assertEqual(self.m.knowledge, expected)
 
     def test_train_accumulates(self):
