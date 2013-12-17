@@ -1,8 +1,9 @@
+from nltk.tokenize import sent_tokenize
 import string, sys
 import random
 
 class Markov():
-    def __init__(self, ngram_size=3, stop_token='<STOP>', max_chars=140, ramble=False):
+    def __init__(self, ngram_size=1, stop_token='<STOP>', max_chars=140, ramble=True):
         self.n = ngram_size
         self.stop_token = stop_token
         self.max_chars = max_chars
@@ -17,7 +18,7 @@ class Markov():
         # For keeping track of good starting tokens.
         # Starting tokens come after a prev value of (),
         # that is, after no previous tokens.
-        self.knowledge[()] = {}
+        self.knowledge[()] = [0, {}]
 
         # Keep track of the last ngram seen,
         # so we can pick the next token.
@@ -37,43 +38,44 @@ class Markov():
                 return True
 
         for doc in docs:
-            tokens = self.tokenize(doc, stop_rule=stop_rule)
+            for sent in sent_tokenize(doc):
+                tokens = self.tokenize(sent, stop_rule=stop_rule)
+                if tokens:
+                    # Keep track of starting token candidates.
+                    start_token = tokens[0]
+                    self.knowledge[()][1][start_token] = self.knowledge[()][1].get(start_token, 0) + 1
 
-            # Keep track of starting token candidates.
-            start_token = tokens[0]
-            self.knowledge[()][start_token] = self.knowledge[()].get(start_token, 0) + 1
+                    # Example, where ngram_size=3:
+                    # ngram = ['this', 'is', 'an', 'example']
+                    for ngram in self.ngramize(tokens):
 
-            # Example, where ngram_size=3:
-            # ngram = ['this', 'is', 'an', 'example']
-            for ngram in self.ngramize(tokens):
+                        # The tokens leading up to the 'post'.
+                        # e.g. ('this', 'is', 'an')
+                        prior = tuple(ngram[:self.n])
 
-                # The tokens leading up to the 'post'.
-                # e.g. ('this', 'is', 'an')
-                prior = tuple(ngram[:self.n])
+                        # The 'post' token.
+                        # e.g. 'example'
+                        post = ngram[-1]
 
-                # The 'post' token.
-                # e.g. 'example'
-                post = ngram[-1]
+                        # Get existing data, if it's there.
+                        # Keeps track as:
+                        # prior: [count, {post: count}]
 
-                # Get existing data, if it's there.
-                # Keeps track as:
-                # prior: [count, {post: count}]
+                        # Create new prior entry if necessary.
+                        if prior not in self.knowledge:
+                            self.knowledge[prior] = [0, {}]
 
-                # Create new prior entry if necessary.
-                if prior not in self.knowledge:
-                    self.knowledge[prior] = [0, {}]
+                        # Increment count of this prior
+                        #self.knowledge[prior][0] += 1
 
-                # Increment count of this prior
-                self.knowledge[prior][0] += 1
+                        # Create new token entry for this prior
+                        # if necessary.
+                        if post not in self.knowledge[prior][1]:
+                            self.knowledge[prior][1][post] = 0
 
-                # Create new token entry for this prior
-                # if necessary.
-                if post not in self.knowledge[prior][1]:
-                    self.knowledge[prior][1][post] = 0
-
-                # Increment count of this post token
-                # for this prior
-                self.knowledge[prior][1][post] += 1
+                        # Increment count of this post token
+                        # for this prior
+                        self.knowledge[prior][1][post] += 1
 
     def ngramize(self, tokens):
         """
@@ -170,10 +172,10 @@ class Markov():
         pick a random starting token, otherwise, just end return None.
         """
         try:
-            return self._weighted_choice(self.knowledge[self.prev])
+            return self._weighted_choice(self.knowledge[self.prev][1])
         except KeyError:
             if len(self.prev) < self.n or self.ramble:
-                return self._weighted_choice(self.knowledge[()])
+                return self._weighted_choice(self.knowledge[()][1])
 
     def _weighted_choice(self, choices):
         """
