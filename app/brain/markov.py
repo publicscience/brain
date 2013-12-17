@@ -2,11 +2,6 @@ import string, sys
 import random
 
 class Markov():
-    """
-    Notes:
-    –  to enforce max length, at max-length-1 should search for a word that has a high probability of being followed with stop?
-    """
-
     def __init__(self, ngram_size=3, stop_token='<STOP>', max_chars=140, ramble=False):
         self.n = ngram_size
         self.stop_token = stop_token
