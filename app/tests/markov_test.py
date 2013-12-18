@@ -1,13 +1,19 @@
-import unittest
+import unittest, os
 from app.brain.markov import Markov
+
+test_filepath = 'app/tests/markov.pickle'
 
 class MarkovTest(unittest.TestCase):
     def setUp(self):
-        self.m = Markov(ngram_size=3)
+        self.m = Markov(ngram_size=3, filepath=test_filepath)
         self.doc = 'hey this is a test?'
 
     def tearDown(self):
-        pass
+        # Clean up test pickle.
+        try:
+            os.remove(test_filepath)
+        except FileNotFoundError:
+            pass
 
     def test_tokenizer_default_stop_words(self):
         tokens = self.m.tokenize(self.doc)
@@ -116,7 +122,7 @@ class MarkovTest(unittest.TestCase):
         self.assertEqual(self.m._next_token(), 'pal')
 
     def test_generate(self):
-        self.m = Markov(ramble=False, ngram_size=3)
+        self.m = Markov(ramble=False, ngram_size=3, filepath=test_filepath)
         self.m.knowledge = {
                 (): {
                     'hello': 1

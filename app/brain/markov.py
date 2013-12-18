@@ -97,6 +97,9 @@ class Markov():
                         # for this prior
                         self.knowledge[prior][post] += 1
 
+        # Save Markov!
+        self.save()
+
     def ngramize(self, tokens):
         """
         A generator which chunks a list of tokens
