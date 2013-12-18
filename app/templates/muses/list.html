@@ -3,6 +3,9 @@
 {% extends 'layout.html' %}
 {% block content %}
 
+    <img src="/assets/img/brain_.png" class="brain">
+
+    <h6>Add a new muse</h6>
     <form action="." method="post">
         {{ forms.render(form) }}
         <div class="actions">
@@ -10,9 +13,15 @@
         </div>
     </form>
 
+
+    <h6>Current muses</h6>
     <ul>
     {% for muse in muses %}
-        <li>{{ muse.username }} <a href="{{ url_for('muse_api', username=muse.username) }}" data-method='delete'>delete</a></li>
+        {% if muse.negative %}
+        <li><a class="muse" href="https://twitter.com/{{ muse.username }}">{{ muse.username }}</a> <span class="negative">[N]</span> <a href="{{ url_for('muse_api', username=muse.username) }}" data-method="delete">delete</a></li>
+        {% else %}
+            <li><a class="muse" href="https://twitter.com/{{ muse.username }}">{{ muse.username }}</a> <a href="{{ url_for('muse_api', username=muse.username) }}" data-method="delete">delete</a></li>
+        {% endif %}
     {% endfor %}
     </ul>
 

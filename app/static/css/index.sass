@@ -1,14 +1,16 @@
 /* ==========================================
 	 Config
 	 ========================================== */
-$primary-color: #004b65
-$secondary-color: #ee4e22
-$background-color: #f4f4ef
+$primary-color: #e44545
+$secondary-color: #baebd3
+$background-color: #e44545
 $error-color: #DD4343
 $warning-color: #E2E942
 $success-color: #26CA7B
 $primary-type: Verdana, Geneva, sans-serif
 $selection-background: #222
+
+@import url(http://fonts.googleapis.com/css?family=Roboto:300)
 
 @import "core/core"
 
@@ -17,17 +19,84 @@ $selection-background: #222
 	 ========================================== */
 // Enable or disable here.
 @import "exts/icons"
-//@import "exts/sticky_footer"
-//@import "exts/video"
-
-
-/* ==========================================
-	 Modules
-	 ========================================== */
-
-// @import "modules/my_module"
 
 
 /* ==========================================
 	 Your Styles
 	 ========================================== */
+
+html
+    background: $background-color
+    font-family: 'Roboto', sans-serif
+    font-weight: 300
+    color: #fff
+
+a, a:visited
+    color: $secondary-color
+
+main
+    max-width: 620px
+    margin: 2em auto
+    padding: 2em
+
+form
+    margin: 0 0 6em 0
+
+.actions
+    text-align: center
+    margin: 2em 0 0 0
+
+button,
+input[type=submit],
+input[type=button]
+    border: none
+    padding: 0.5em 1em
+    color: #fff
+    background: darken($background-color, 16%)
+    font-weight: 300
+
+textarea,
+input[type=text]
+    border: none
+    padding: 0.5em 0.8em
+
+textarea
+    width: 100%
+    min-height: 12em
+    margin: 0.5em 0 0 0
+    padding: 1em
+
+h1, h2, h3, h4, h5, h6
+    font-weight: 300
+    border-bottom: 1px solid $secondary-color
+    margin-bottom: 1em
+
+.brain
+    width: 200px
+    margin: 0 auto 4em auto
+    display: block
+
+fieldset > div
+    margin: 1em 0
+
+label
+    width: 6em
+    margin-right: 1em
+    display: inline-block
+
+.negative
+    color: darken($background-color, 16%)
+
+.muse, .muse:visited
+    color: #fff
+    text-decoration: none
+
+.it-speaketh
+    font-size: 2em
+
+.notifications
+    text-align: center
+    padding: 2em
+    margin: 0 0 2em 0
+    background: $secondary-color
+    color: $primary-color

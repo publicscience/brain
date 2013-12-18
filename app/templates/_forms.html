@@ -5,8 +5,7 @@
   {{ field() }}
 {% else %}
   <div class="clearfix {% if field.errors %}error{% endif %}">
-    {{ field.label }}
-    <div class="input">
+    <label>{{ field.label }}</label>
       {% if field.name == "body" %}
         {{ field(rows=10, cols=40) }}
       {% else %}
@@ -21,7 +20,6 @@
         {% endif %}
         </span>
       {% endif %}
-    </div>
   </div>
 {% endif %}
 {% endfor %}

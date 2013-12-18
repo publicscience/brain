@@ -1,0 +1,22 @@
+{
+  "fonts": [
+    "/Users/ftseng/Desktop/projects/publicsciencebrain/app/static/fontcustom/fontcustom_649241a072554efa9f59f3c3a3f82cae.ttf",
+    "/Users/ftseng/Desktop/projects/publicsciencebrain/app/static/fontcustom/fontcustom_649241a072554efa9f59f3c3a3f82cae.woff",
+    "/Users/ftseng/Desktop/projects/publicsciencebrain/app/static/fontcustom/fontcustom_649241a072554efa9f59f3c3a3f82cae.eot",
+    "/Users/ftseng/Desktop/projects/publicsciencebrain/app/static/fontcustom/fontcustom_649241a072554efa9f59f3c3a3f82cae.svg"
+  ],
+  "templates": [
+    "/Users/ftseng/Desktop/projects/publicsciencebrain/app/static/fontcustom/fontcustom.css",
+    "/Users/ftseng/Desktop/projects/publicsciencebrain/app/static/fontcustom/fontcustom-preview.html"
+  ],
+  "glyphs": [
+    "chat",
+    "document",
+    "edit",
+    "mail",
+    "map",
+    "menu",
+    "search",
+    "view"
+  ]
+}

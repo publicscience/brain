@@ -12,15 +12,15 @@
 
 <body>
   <main role="main" id="main">
-      <div class="notifications">
         {% with messages = get_flashed_messages() %}
             {% if messages %}
+              <div class="notifications">
                 {% for message in messages %}
                     {{ message }}
                 {% endfor %}
+              </div>
             {% endif %}
         {% endwith %}
-      </div>
 
     {# Yield for other templates. #}
     {% block content %}
