@@ -1,15 +1,30 @@
-from flask import Blueprint, render_template, redirect, request, url_for, jsonify
+from flask import Blueprint, render_template, redirect, request, url_for, jsonify, flash
 from flask.views import MethodView
 from flask.ext.mongoengine.wtf import model_form
 from app import app
 from app.models import Muse, Tweet, Config
 from app.auth import requires_auth
+from app.brain import MKV
+from app.forms import TrainingForm
 
 # Landing page
 @app.route('/')
 @app.route('/index')
 def index():
     return render_template('index.html')
+
+@app.route('/generate')
+def generate():
+    return render_template('generate.html', speech=MKV.generate())
+
+@app.route('/train', methods=['GET', 'POST'])
+def train():
+    form = TrainingForm()
+    if form.validate_on_submit():
+        flash('I\'m learning!')
+        MKV.train([form.doc.data])
+        return redirect('/train')
+    return render_template('train.html', form=form)
 
 @app.errorhandler(404)
 def internal_error(error):
@@ -102,3 +117,4 @@ class ConfigAPI(MethodView):
         return redirect(url_for('config_api'))
 config_api = ConfigAPI.as_view('config_api')
 app.add_url_rule('/config/', view_func=config_api, methods=['GET', 'POST'])
+

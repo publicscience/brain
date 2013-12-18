@@ -215,4 +215,7 @@ class Markov():
         for key, value in choices.items():
             summ += value
             if rand < summ: return key
-        return key
+
+        # If this returns False,
+        # it's likely because the knowledge is empty.
+        return False

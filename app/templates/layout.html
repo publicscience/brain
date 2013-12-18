@@ -12,6 +12,16 @@
 
 <body>
   <main role="main" id="main">
+      <div class="notifications">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+      </div>
+
     {# Yield for other templates. #}
     {% block content %}
     {% endblock %}
