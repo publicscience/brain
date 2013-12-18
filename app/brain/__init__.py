@@ -1,11 +1,14 @@
 from app.brain import twitter
 from app.brain.classifier import Classifier
+from app.brain.markov import Markov
 from app.models import Muse, Tweet
 from app.config import config
 
-# Load the classifier.
+# Load the classifier and markov.
 # Loaded here so we can keep it in memory.
+# accessible via app.brain.CLS or app.brain.MKV
 CLS = Classifier()
+MKV = Markov()
 
 def ponder():
     """
@@ -37,8 +40,9 @@ def ponder():
     # See if there's anything to retweet.
     _consider_retweets(pos)
 
-    # Update the classifier.
+    # Update the classifier and markov.
     CLS.train(pos_txts + neg_txts, labels)
+    MKV.train(pos_txts)
 
 
 def _process_muse(muse):
