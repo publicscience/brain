@@ -34,3 +34,6 @@ def tweets(username, count=200):
 
 def retweet(id):
     api.retweet(id)
+
+def tweet(text):
+    api.update_status(text)

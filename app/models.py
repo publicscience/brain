@@ -34,10 +34,12 @@ class Config(db.Document):
     """
 
     # Retweet probability threshold.
+    # The higher this is, the less the brain will retweet.
     retweet_threshold = db.FloatField(required=True, default=0.9)
 
-    # Maximum activity (tweets + retweets) in the active time interval.
-    max_activity = db.IntField(required=True, default=10)
+    # Chance to act. Probability the brain will tweet.
+    # The lower this is, the less the brain will tweet.
+    chance_to_act = db.IntField(required=True, default=0.05)
 
     meta = {
             'max_documents': 1

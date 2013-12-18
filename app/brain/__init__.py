@@ -3,6 +3,7 @@ from app.brain.classifier import Classifier
 from app.brain.markov import Markov
 from app.models import Muse, Tweet
 from app.config import config
+import random
 
 # Load the classifier and markov.
 # Loaded here so we can keep it in memory.
@@ -13,8 +14,8 @@ MKV = Markov()
 def ponder():
     """
     Fetch tweets from the Muses
-    and memorize them,
-    and decide how to act.
+    and memorize them;
+    i.e. train classifier or Markov on them.
     """
 
     # Each of these are just a list
@@ -45,6 +46,14 @@ def ponder():
     MKV.train(pos_txts)
 
 
+def consider():
+    """
+    Decide whether or not to act (tweet).
+    """
+    if random.random() < config().chance_to_act:
+        twitter.tweet(MKV.generate())
+
+
 def _process_muse(muse):
     """
     Processes a Muse's tweets,
@@ -62,6 +71,7 @@ def _process_muse(muse):
         t = Tweet(**data)
         t.save()
     return tweets
+
 
 def _consider_retweets(tweets):
     """
