@@ -7,7 +7,7 @@ app/static/js/vendor/bower/**/*
 config.json
 .sass-cache/
 node_modules/
-fontcustom/*
+app/static/fontcustom/*
 config.py
 markov.pickle
 classifier.pickle
