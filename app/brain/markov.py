@@ -1,28 +1,51 @@
 from nltk.tokenize import sent_tokenize
-import string, sys
-import random
+import string, sys, random, pickle
+from os import getcwd, path
+
+__location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
 
 class Markov():
-    def __init__(self, ngram_size=1, stop_token='<STOP>', max_chars=140, ramble=True):
+    def __init__(self, ngram_size=1, stop_token='<STOP>', max_chars=140, ramble=True, filepath=path.join(__location__, 'markov.pickle')):
         self.n = ngram_size
         self.stop_token = stop_token
         self.max_chars = max_chars
         self.ramble = ramble
+        self.filepath = filepath
 
-        # Load knowledge into memory.
-        # For now, just start with nothing.
-        # In the format of:
-        # ('this', 'is', 'an'): [1, 'example']
-        self.knowledge = {}
+        self.knowledge = self.load()
 
-        # For keeping track of good starting tokens.
-        # Starting tokens come after a prev value of (),
-        # that is, after no previous tokens.
-        self.knowledge[()] = [0, {}]
+        if self.knowledge is None:
+            # Load knowledge into memory.
+            # For now, just start with nothing.
+            # In the format of:
+            # ('this', 'is', 'an'): [1, 'example']
+            self.knowledge = {}
+
+            # For keeping track of good starting tokens.
+            # Starting tokens come after a prev value of (),
+            # that is, after no previous tokens.
+            self.knowledge[()] = {}
 
         # Keep track of the last ngram seen,
         # so we can pick the next token.
         self.prev = ()
+
+    def save(self):
+        """
+        Saves the knowledge to disk.
+        """
+        file = open(self.filepath, 'wb')
+        pickle.dump(self.knowledge, file)
+
+    def load(self):
+        """
+        Loads the knowledge from disk.
+        """
+        try:
+            file = open(self.filepath, 'rb')
+            return pickle.load(file)
+        except IOError:
+            return None
 
     def train(self, docs):
         """
@@ -43,7 +66,7 @@ class Markov():
                 if tokens:
                     # Keep track of starting token candidates.
                     start_token = tokens[0]
-                    self.knowledge[()][1][start_token] = self.knowledge[()][1].get(start_token, 0) + 1
+                    self.knowledge[()][start_token] = self.knowledge[()].get(start_token, 0) + 1
 
                     # Example, where ngram_size=3:
                     # ngram = ['this', 'is', 'an', 'example']
@@ -59,23 +82,20 @@ class Markov():
 
                         # Get existing data, if it's there.
                         # Keeps track as:
-                        # prior: [count, {post: count}]
+                        # prior: {post: count}
 
                         # Create new prior entry if necessary.
                         if prior not in self.knowledge:
-                            self.knowledge[prior] = [0, {}]
-
-                        # Increment count of this prior
-                        #self.knowledge[prior][0] += 1
+                            self.knowledge[prior] = {}
 
                         # Create new token entry for this prior
                         # if necessary.
-                        if post not in self.knowledge[prior][1]:
-                            self.knowledge[prior][1][post] = 0
+                        if post not in self.knowledge[prior]:
+                            self.knowledge[prior][post] = 0
 
                         # Increment count of this post token
                         # for this prior
-                        self.knowledge[prior][1][post] += 1
+                        self.knowledge[prior][post] += 1
 
     def ngramize(self, tokens):
         """
@@ -172,10 +192,10 @@ class Markov():
         pick a random starting token, otherwise, just end return None.
         """
         try:
-            return self._weighted_choice(self.knowledge[self.prev][1])
+            return self._weighted_choice(self.knowledge[self.prev])
         except KeyError:
             if len(self.prev) < self.n or self.ramble:
-                return self._weighted_choice(self.knowledge[()][1])
+                return self._weighted_choice(self.knowledge[()])
 
     def _weighted_choice(self, choices):
         """

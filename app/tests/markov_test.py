@@ -3,7 +3,7 @@ from app.brain.markov import Markov
 
 class MarkovTest(unittest.TestCase):
     def setUp(self):
-        self.m = Markov()
+        self.m = Markov(ngram_size=3)
         self.doc = 'hey this is a test?'
 
     def tearDown(self):
@@ -32,9 +32,9 @@ class MarkovTest(unittest.TestCase):
         tweet =  ' '.join(['RT', self.doc, '@foo'])
         expected = {
                 (): {'hey': 1},
-                ('is', 'a', 'test'): [1, {'<STOP>': 1}],
-                ('hey', 'this', 'is'): [1, {'a': 1}],
-                ('this', 'is', 'a'): [1, {'test': 1}]
+                ('is', 'a', 'test'): {'<STOP>': 1},
+                ('hey', 'this', 'is'): {'a': 1},
+                ('this', 'is', 'a'): {'test': 1}
         }
 
         self.m.train([tweet])
@@ -43,9 +43,9 @@ class MarkovTest(unittest.TestCase):
     def test_train_accumulates(self):
         expected = {
                 (): {'hey': 2},
-                ('is', 'a', 'test'): [2, {'<STOP>': 2}],
-                ('hey', 'this', 'is'): [2, {'a': 2}],
-                ('this', 'is', 'a'): [2, {'test': 2}]
+                ('is', 'a', 'test'): {'<STOP>': 2},
+                ('hey', 'this', 'is'): {'a': 2},
+                ('this', 'is', 'a'): {'test': 2}
         }
 
         self.m.train([self.doc])
@@ -116,6 +116,7 @@ class MarkovTest(unittest.TestCase):
         self.assertEqual(self.m._next_token(), 'pal')
 
     def test_generate(self):
+        self.m = Markov(ramble=False, ngram_size=3)
         self.m.knowledge = {
                 (): {
                     'hello': 1
@@ -128,7 +129,6 @@ class MarkovTest(unittest.TestCase):
         self.assertEqual(speech,'hello hello hello goodbye')
 
     def test_generate_under_max_chars(self):
-        self.m = Markov(ramble=True)
         self.m.knowledge = {
                 (): {
                     'hello': 1
