@@ -83,12 +83,16 @@ def _consider_retweets(tweets):
     classification is above THRESHOLD.
     0 = neg, 1 = pos
     """
+    num_retweeted = 0
     # Filter out protected tweets.
     candidates = [tweet for tweet in tweets if not tweet['protected'] and not tweet['retweeted']]
     txts = _get_tweet_texts(candidates)
     for idx, doc_probs in enumerate(CLS.classify(txts)):
+        if num_retweeted >= config().max_retweets:
+            break
         if doc_probs[1] > config().retweet_threshold:
             twitter.retweet(candidates[idx]['tid'])
+            num_retweeted += 1
 
 
 def _get_tweet_texts(tweets):

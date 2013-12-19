@@ -41,6 +41,10 @@ class Config(db.Document):
     # The lower this is, the less the brain will tweet.
     chance_to_act = db.FloatField(required=True, default=0.05)
 
+    # Maximum amount of retweets in an interval.
+    # Cause sometimes it accidentally retweets a TON of stuff.
+    max_retweets = db.IntField(required=True, default=10)
+
     meta = {
             'max_documents': 1
     }
