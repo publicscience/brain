@@ -14,7 +14,6 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate')
-@requires_auth
 def generate():
     return render_template('generate.html', speech=MKV.generate())
 
