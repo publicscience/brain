@@ -1,6 +1,6 @@
 from app import brain
 import schedule
-import time
+import time, threading
 
 """
 Fetch tweets and memorize and process them
@@ -13,7 +13,17 @@ Every 10 minutes consider tweeting something poignant.
 """
 schedule.every(10).minutes.do(brain.consider)
 
-# Run the jobs.
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+# Run the jobs without blocking the main thread.
+# http://bit.ly/19V6qTF
+cease_continuous_run = threading.Event()
+
+class ScheduleThread(threading.Thread):
+    @classmethod
+    def run(cls):
+        while not cease_continuous_run.is_set():
+            schedule.run_pending()
+            time.sleep(1)
+
+continuous_thread = ScheduleThread()
+continuous_thread.daemon=True # kills thread when main process ends.
+continuous_thread.start()
