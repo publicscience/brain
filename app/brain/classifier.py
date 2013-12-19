@@ -53,8 +53,13 @@ class Classifier():
         Returns a list of class probabilities
         for each document.
         """
-        docs_ = self.vectorizer.transform(docs)
-        return self.clf.predict_proba(docs_)
+        docs_ = self.vectorizer.fit_transform(docs)
+        try:
+            return self.clf.predict_proba(docs_)
+
+        # Likely because the classifier hasn't been trained yet.
+        except AttributeError:
+            return []
 
     def save(self):
         """
