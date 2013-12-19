@@ -85,7 +85,7 @@ def _consider_retweets(tweets):
     """
     txts = _get_tweet_texts(tweets)
     for idx, doc_probs in enumerate(CLS.classify(txts)):
-        if doc_probs[1] > config().threshold:
+        if doc_probs[1] > config().retweet_threshold:
             twitter.retweet(tweets[idx]['tid'])
 
 
