@@ -39,7 +39,7 @@ class Config(db.Document):
 
     # Chance to act. Probability the brain will tweet.
     # The lower this is, the less the brain will tweet.
-    chance_to_act = db.IntField(required=True, default=0.05)
+    chance_to_act = db.FloatField(required=True, default=0.05)
 
     meta = {
             'max_documents': 1
