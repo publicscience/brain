@@ -9,4 +9,4 @@ app.config.from_object('config')
 # Setup the database.
 db = MongoEngine(app)
 
-from app import routes, jobs, config
+from app import routes, jobs, config, notify
