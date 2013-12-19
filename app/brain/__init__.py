@@ -3,6 +3,7 @@ from app.brain.classifier import Classifier
 from app.brain.markov import Markov
 from app.models import Muse, Tweet
 from app.config import config
+from mongoengine.errors import NotUniqueError
 import random
 
 # Load the classifier and markov.
@@ -69,7 +70,10 @@ def _process_muse(muse):
                 'username': username
         }
         t = Tweet(**data)
-        t.save()
+        try:
+            t.save()
+        except NotUniqueError:
+            pass
     return tweets
 
 
