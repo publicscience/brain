@@ -14,10 +14,12 @@ def index():
     return render_template('index.html')
 
 @app.route('/generate')
+@requires_auth
 def generate():
     return render_template('generate.html', speech=MKV.generate())
 
 @app.route('/train', methods=['GET', 'POST'])
+@requires_auth
 def train():
     form = TrainingForm()
     if form.validate_on_submit():
@@ -58,6 +60,7 @@ class MuseAPI(MethodView):
         }
         return context
 
+    @requires_auth
     def get(self, username):
         # List view
         if username is None:
@@ -99,7 +102,7 @@ register_api(MuseAPI, 'muse_api', '/muses/', id='username', id_type='string')
 class ConfigAPI(MethodView):
     form = model_form(Config, exclude=['created_at'])
 
-    #@requires_auth
+    @requires_auth
     def get(self):
         config = Config.objects[0]
         form = self.form(request.form, obj=config)
