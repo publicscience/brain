@@ -1,4 +1,5 @@
 import tweepy
+from tweepy import TweepError
 
 from os import getcwd, path
 import simplejson as json
@@ -35,7 +36,16 @@ def tweets(username, count=200):
             ]
 
 def retweet(id):
-    api.retweet(id)
+    try:
+        api.retweet(id)
+    except TweepError as err:
+        # Assume we may have violated some rate limit
+        # and forget about it
+        if '403' in err:
+            pass
+        else:
+            raise err
+
 
 def tweet(text):
     api.update_status(text)
