@@ -9,5 +9,6 @@ config.json
 node_modules/
 app/static/fontcustom/*
 config.py
+!app/config.py
 markov.pickle
 classifier.pickle
