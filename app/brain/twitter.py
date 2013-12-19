@@ -27,7 +27,8 @@ def tweets(username, count=200):
     return [
             {
                 'body': tweet.text,
-                'tid': tweet.id
+                'tid': tweet.id,
+                'protected': tweet.user.protected
             }
             for tweet in api.user_timeline(screen_name=username, count=count)
             ]
