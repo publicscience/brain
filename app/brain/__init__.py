@@ -109,14 +109,17 @@ def _consider_retweets(tweets):
     # Filter out protected tweets.
     candidates = [tweet for tweet in tweets if not tweet['protected'] and not tweet['retweeted']]
     txts = _get_tweet_texts(candidates)
-    for idx, doc_probs in enumerate(CLS.classify(txts)):
-        if num_retweeted >= config().max_retweets:
-            logger.info('Hit maximum retweet limit, stopping for now.')
-            break
-        if doc_probs[1] > retweet_threshold:
-            logger.info('Classified as %s retweetable, above %s threshold, retweeting...' % (doc_probs[1], retweet_threshold))
-            twitter.retweet(candidates[idx]['tid'])
-            num_retweeted += 1
+    if txts:
+        for idx, doc_probs in enumerate(CLS.classify(txts)):
+            if num_retweeted >= config().max_retweets:
+                logger.info('Hit maximum retweet limit, stopping for now.')
+                break
+            if doc_probs[1] > retweet_threshold:
+                logger.info('Classified as %s retweetable, above %s threshold, retweeting...' % (doc_probs[1], retweet_threshold))
+                twitter.retweet(candidates[idx]['tid'])
+                num_retweeted += 1
+            else:
+                logger.info('Classified as %s retweetable, below %s threshold, not retweeting...' % (doc_probs[1], retweet_threshold))
 
 
 def _get_tweet_texts(tweets):
