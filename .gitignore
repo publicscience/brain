@@ -12,3 +12,4 @@ config.py
 !app/config.py
 markov.pickle
 classifier.pickle
+log.log

@@ -6,6 +6,10 @@ from app.config import config
 from mongoengine.errors import NotUniqueError
 import random
 
+# Logging
+from logger import logger
+logger = logger(__name__)
+
 # Load the classifier and markov.
 # Loaded here so we can keep it in memory.
 # accessible via app.brain.CLS or app.brain.MKV
@@ -18,6 +22,7 @@ def ponder():
     and memorize them;
     i.e. train classifier or Markov on them.
     """
+    logger.info('Pondering new twitter data...')
 
     # Each of these are just a list
     # of tweets as strings.
@@ -51,6 +56,7 @@ def consider():
     """
     Decide whether or not to act (tweet).
     """
+    logger.info('Considering tweeting...')
     if random.random() < config().chance_to_act:
         twitter.tweet(MKV.generate())
 
@@ -83,7 +89,9 @@ def _consider_retweets(tweets):
     classification is above THRESHOLD.
     0 = neg, 1 = pos
     """
+    logger.info('Considering retweeting...')
     num_retweeted = 0
+
     # Filter out protected tweets.
     candidates = [tweet for tweet in tweets if not tweet['protected'] and not tweet['retweeted']]
     txts = _get_tweet_texts(candidates)
