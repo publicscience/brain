@@ -1,6 +1,10 @@
 import tweepy
 from tweepy import TweepError
 
+# Logging
+from app.logger import logger
+logger = logger(__name__)
+
 from os import getcwd, path
 import simplejson as json
 __location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
@@ -42,10 +46,18 @@ def retweet(id):
         # Assume we may have violated some rate limit
         # and forget about it
         if '403' in err:
-            pass
+            logger.info('403 error when trying to retweet. Possibly hit a rate limit.')
         else:
             raise err
 
 
 def tweet(text):
-    api.update_status(text)
+    try:
+        api.update_status(text)
+    except TweepError as err:
+        # Assume we may have violated some rate limit
+        # and forget about it
+        if '403' in err:
+            logger.info('403 error when trying to tweet. Possibly hit a rate limit.')
+        else:
+            raise err

@@ -37,6 +37,9 @@ def ponder():
     for muse in Muse.objects(negative=True):
         neg += _process_muse(muse)
 
+    # Combine the new tweets.
+    new_tweets = pos_txts + neg_txts
+
     # Extract the tweet contents into lists.
     pos_txts = _get_tweet_texts(pos)
     neg_txts = _get_tweet_texts(neg)
@@ -48,7 +51,8 @@ def ponder():
     _consider_retweets(pos)
 
     # Update the classifier and markov.
-    CLS.train(pos_txts + neg_txts, labels)
+    logger.info('Collected %s new tweets, training...' % len(new_tweets))
+    CLS.train(new_tweets, labels)
     MKV.train(pos_txts)
 
 
@@ -57,8 +61,13 @@ def consider():
     Decide whether or not to act (tweet).
     """
     logger.info('Considering tweeting...')
-    if random.random() < config().chance_to_act:
+    roll = random.random()
+    chance = config().change_to_act
+    if roll < chance:
+        logger.info('Rolled %s, chance to act is %s, tweeting.' % (roll, chance))
         twitter.tweet(MKV.generate())
+    else:
+        logger.info('Rolled %s, chance to act is %s, NOT tweeting.' % (roll, chance))
 
 
 def _process_muse(muse):
@@ -68,7 +77,9 @@ def _process_muse(muse):
     and saving them to the db.
     """
     username = muse.username
+    logger.info('Collecting tweets for %s...' % username)
     tweets = twitter.tweets(username=username)
+    new_tweets = []
     for tweet in tweets:
         data = {
                 'body': tweet['body'],
@@ -78,9 +89,11 @@ def _process_muse(muse):
         t = Tweet(**data)
         try:
             t.save()
+            new_tweets.append(tweet)
         except NotUniqueError:
+            # Duplicate tweet
             pass
-    return tweets
+    return new_tweets
 
 
 def _consider_retweets(tweets):
@@ -91,14 +104,17 @@ def _consider_retweets(tweets):
     """
     logger.info('Considering retweeting...')
     num_retweeted = 0
+    retweet_threshold = config().retweet_threshold
 
     # Filter out protected tweets.
     candidates = [tweet for tweet in tweets if not tweet['protected'] and not tweet['retweeted']]
     txts = _get_tweet_texts(candidates)
     for idx, doc_probs in enumerate(CLS.classify(txts)):
         if num_retweeted >= config().max_retweets:
+            logger.info('Hit maximum retweet limit, stopping for now.')
             break
-        if doc_probs[1] > config().retweet_threshold:
+        if doc_probs[1] > retweet_threshold:
+            logger.info('Classified as %s retweetable, above %s threshold, retweeting...' % (doc_probs[1], retweet_threshold))
             twitter.retweet(candidates[idx]['tid'])
             num_retweeted += 1
 
