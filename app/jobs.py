@@ -2,6 +2,11 @@ from app import brain
 import schedule
 import time, threading
 
+# Logging
+from app.logger import logger
+logger = logger(__name__)
+logger.info('Scheduling jobs...')
+
 """
 Fetch tweets and memorize and process them
 every hour.
