@@ -17,6 +17,10 @@ def index():
 def generate():
     return render_template('generate.html', speech=MKV.generate())
 
+@app.route('/status')
+def status():
+    return render_template('status.html', tweets=Tweet.objects.count())
+
 @app.route('/train', methods=['GET', 'POST'])
 @requires_auth
 def train():

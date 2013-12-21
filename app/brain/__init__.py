@@ -7,7 +7,7 @@ from mongoengine.errors import NotUniqueError
 import random
 
 # Logging
-from logger import logger
+from app.logger import logger
 logger = logger(__name__)
 
 # Load the classifier and markov.
