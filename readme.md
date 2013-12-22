@@ -33,6 +33,11 @@ $ vi app/brain/config.json
 ```
 (see below for more info)
 
+Run tests to make sure everything's working:
+```
+$ nosetests
+```
+
 Run the Flask application:
 ```
 $ python application.py
