@@ -62,7 +62,7 @@ def consider():
     """
     logger.info('Considering tweeting...')
     roll = random.random()
-    chance = config().change_to_act
+    chance = config().chance_to_act
     if roll < chance:
         logger.info('Rolled %s, chance to act is %s, tweeting.' % (roll, chance))
         twitter.tweet(MKV.generate())
