@@ -1,0 +1,2 @@
+*/10 * * * * /srv/www/brain/env/bin/python /srv/www/brain/jobs/consider.py
+0 * * * * /srv/www/brain/env/bin/python /srv/www/brain/jobs/ponder.py
