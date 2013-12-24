@@ -1,2 +1,4 @@
-*/10 * * * * /srv/www/brain/env/bin/python /srv/www/brain/jobs/consider.py
-0 * * * * /srv/www/brain/env/bin/python /srv/www/brain/jobs/ponder.py
+# do: `crontab -e` and paste these lines in. you may need to adjust the paths.
+
+*/10 * * * *  cd /srv/www/brain/; /srv/www/brain/env/bin/python -m app.jobs.consider
+0 * * * *  cd /srv/www/brain/; /srv/www/brain/env/bin/python -m app.jobs.ponder
