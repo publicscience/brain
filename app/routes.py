@@ -2,10 +2,9 @@ from flask import Blueprint, render_template, redirect, request, url_for, jsonif
 from flask.views import MethodView
 from flask.ext.mongoengine.wtf import model_form
 from app import app
-from app.models import Muse, Tweet, Config
+from app.models import Muse, Tweet, Config, Doc
 from app.auth import requires_auth
 from app.brain import MKV
-from app.forms import TrainingForm
 
 # Landing page
 @app.route('/')
@@ -20,16 +19,6 @@ def generate():
 @app.route('/status')
 def status():
     return render_template('status.html', tweets=Tweet.objects.count())
-
-@app.route('/train', methods=['GET', 'POST'])
-@requires_auth
-def train():
-    form = TrainingForm()
-    if form.validate_on_submit():
-        flash('I\'m learning!')
-        MKV.train([form.doc.data])
-        return redirect('/train')
-    return render_template('train.html', form=form)
 
 @app.errorhandler(404)
 def internal_error(error):
@@ -123,4 +112,30 @@ class ConfigAPI(MethodView):
         return redirect(url_for('config_api'))
 config_api = ConfigAPI.as_view('config_api')
 app.add_url_rule('/config/', view_func=config_api, methods=['GET', 'POST'])
+
+
+class DocAPI(MethodView):
+    form = model_form(Doc, exclude=['created_at'])
+
+    @requires_auth
+    def get(self):
+        form = self.form(request.form)
+        return render_template('train.html', form=form)
+
+    def post(self):
+        form = self.form(request.form)
+
+        if form.validate():
+            doc = Doc()
+            form.populate_obj(doc)
+            doc.save()
+            MKV.train([form.body.data])
+            flash('I\'m learning!')
+            return redirect(url_for('doc_api'))
+
+        return redirect(url_for('doc_api'))
+
+doc_api = DocAPI.as_view('doc_api')
+app.add_url_rule('/train/', view_func=doc_api, methods=['GET', 'POST'])
+
 

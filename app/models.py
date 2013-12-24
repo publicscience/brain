@@ -48,3 +48,16 @@ class Config(db.Document):
     meta = {
             'max_documents': 1
     }
+
+class Doc(db.Document):
+    """
+    A manually-fed training document for the Markov generator.
+    """
+    created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
+    body = db.StringField(required=True, unique=True)
+
+    meta = {
+            'allow_inheritance': True,
+            'indexes': ['-created_at'],
+            'ordering': ['-created_at']
+    }
