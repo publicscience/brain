@@ -58,6 +58,11 @@ class MarkovTest(unittest.TestCase):
         self.m.train([self.doc])
         self.assertEqual(self.m.knowledge, expected)
 
+    def test_reset(self):
+        self.m.train([self.doc])
+        self.m.reset()
+        self.assertEqual(self.m.knowledge, {():{}})
+
     def test_weighted_choice(self):
         num_trials = 100000
         dict = {

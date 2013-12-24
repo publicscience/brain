@@ -100,6 +100,16 @@ class Markov():
         # Save Markov!
         self.save()
 
+
+    def reset(self):
+        """
+        Resets the Markov generator's knowledge.
+        """
+        self.knowledge = {}
+        self.knowledge[()] = {}
+        self.save()
+
+
     def ngramize(self, tokens):
         """
         A generator which chunks a list of tokens

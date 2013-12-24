@@ -1,7 +1,7 @@
 from app.brain import twitter
 from app.brain.classifier import Classifier
 from app.brain.markov import Markov
-from app.models import Muse, Tweet
+from app.models import Muse, Tweet, Doc
 from app.config import config
 from mongoengine.errors import NotUniqueError
 import random
@@ -68,6 +68,15 @@ def consider():
         twitter.tweet(MKV.generate())
     else:
         logger.info('Rolled %s, chance to act is %s, NOT tweeting.' % (roll, chance))
+
+
+def retrain():
+    """
+    Retrains the Markov generator on the documents in the database.
+    """
+    MKV.reset()
+    MKV.train(Twitter.objects.all())
+    MKV.train(Doc.objects.all())
 
 
 def _process_muse(muse):
