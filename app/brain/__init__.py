@@ -14,7 +14,7 @@ logger = logger(__name__)
 # Loaded here so we can keep it in memory.
 # accessible via app.brain.CLS or app.brain.MKV
 CLS = Classifier()
-MKV = Markov()
+MKV = Markov(ramble=False)
 
 def ponder():
     """
