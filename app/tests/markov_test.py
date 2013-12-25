@@ -5,7 +5,7 @@ test_filepath = 'app/tests/markov.pickle'
 
 class MarkovTest(unittest.TestCase):
     def setUp(self):
-        self.m = Markov(ngram_size=3, filepath=test_filepath, ramble=True)
+        self.m = Markov(ngram_size=3, filepath=test_filepath, ramble=True, max_chars=140)
         self.doc = 'hey this is a test?'
 
     def tearDown(self):
@@ -144,11 +144,53 @@ class MarkovTest(unittest.TestCase):
                 (): {
                     'hello': 1
                 },
+                # the long string is 200 chars long.
                 ('hello', 'hello', 'hello'): {
-                    'goodbye': 1
+                    'goodbyeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee': 1
                 }
         }
         # Run a few times just to be sure.
         for i in range(1000):
             speech = self.m.generate()
             self.assertLessEqual(len(speech),self.m.max_chars)
+
+    def test_generate_under_max_chars_consolidate_strategy(self):
+        self.m.knowledge = {
+                (): {
+                    'hello': 1
+                },
+                ('hello', 'hello', 'hello'): {
+                    'goodbye': 1
+                },
+                ('hello', 'hello', 'goodbye'): {
+                    'hey': 1,
+                    '<STOP>': 1
+                },
+                ('hello', 'goodbye', 'hey'): {
+                    'goodbyeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee': 1
+                }
+        }
+        # Run a few times just to be sure.
+        for i in range(1000):
+            speech = self.m.generate()
+            self.assertIn(speech, ['hello hello hello goodbye', 'hello hello hello goodbye hey'])
+
+    def test_generate_under_max_chars_fallsback_to_truncation_strategy(self):
+        self.m.knowledge = {
+                (): {
+                    'hello': 1
+                },
+                ('hello', 'hello', 'hello'): {
+                    'goodbye': 1
+                },
+                ('hello', 'hello', 'goodbye'): {
+                    'hey': 1
+                },
+                ('hello', 'goodbye', 'hey'): {
+                    'goodbyeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee': 1
+                }
+        }
+        # Run a few times just to be sure.
+        for i in range(1000):
+            speech = self.m.generate()
+            self.assertEqual(speech, 'hello hello hello goodbye hey')

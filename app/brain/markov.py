@@ -182,15 +182,45 @@ class Markov():
 
         # If the constraint is violated, retry.
         if not constraint(tokens):
-            # Not really looking for a good stop candidate,
-            # just stop wherever :)
-            # Just pop off the last token and call it a day.
-            tokens = tokens[:-1]
+            full = tokens
+            consolidated = self._consolidate(tokens)
+
+            if not consolidated:
+                # Just pop off the last token and call it a day.
+                tokens = full[:-1]
+            else:
+                tokens = consolidated
 
         # Reset the previous tokens.
         self.prev = ()
 
         return ' '.join(tokens)
+
+    def _consolidate(self, tokens):
+        """
+        Shortens the generated text so it is
+        less than the max character length.
+
+        The strategy is to remove ngrams until
+        the list of tokens ends with an ngram that
+        has a <STOP> associated with it.
+        The truncated list of tokens is returned.
+        This list could potentially be empty.
+        """
+        # The n-length tail of the generated text,
+        # to see if it's a stop candidate.
+        tail = tuple(tokens[-self.n:])
+
+        # Check if we can stop here.
+        # Stop here anyway if tail is (), since it will infinitely recurse,
+        # and it implies the tokens list is now empty.
+        if not tail or (self.knowledge.get(tail, {}).get('<STOP>', 0) and len(tokens) < self.max_chars):
+            return tokens
+
+        # If not, RECURSE!
+        else:
+            tokens = tokens[0:-self.n]
+            return self._consolidate(tokens)
 
     def _next_token(self):
         """
