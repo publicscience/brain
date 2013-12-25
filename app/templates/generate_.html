@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+    <img src="/assets/img/brain_.png" class="brain">
+
+    <h6>It speaketh!</h6>
+    <div class="it-speaketh">{{ speech }}</div>
+
+    <form action="" method="post">
+        <textarea name="tweet" id="tweet" style="display:none;">{{ speech }}</textarea>
+        <div class="actions">
+            <input type="submit" value="Twitter this!">
+        </div>
+    </form>
+
+{% endblock %}

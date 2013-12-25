@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, redirect, request, url_for, jsonify, flash
 from flask.views import MethodView
 from flask.ext.mongoengine.wtf import model_form
-from app import app, brain
+from app import app, brain, db
 from app.models import Muse, Tweet, Config, Doc
 from app.auth import requires_auth
+from app.forms import TweetingForm
 
 # Logging
 from app.logger import logger
@@ -18,6 +19,16 @@ def index():
 @app.route('/generate')
 def generate():
     return render_template('generate.html', speech=brain.MKV.generate())
+
+@app.route('/generate_', methods=['GET', 'POST'])
+@requires_auth
+def generate_():
+    form = TweetingForm()
+    if form.validate_on_submit():
+        flash('Tweet twoot')
+        brain.twitter.tweet(form.tweet.data)
+        return redirect('/generate_')
+    return render_template('generate_.html', form=form, speech=brain.MKV.generate())
 
 @app.route('/status')
 def status():
