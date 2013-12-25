@@ -170,7 +170,7 @@ class Markov():
             if not token or stop_rule(token):
                 continue
 
-            tokens.append(token)
+            tokens.append(token.lower())
         return tokens
 
     def generate(self):
