@@ -65,7 +65,7 @@ class Markov():
                 tokens = self.tokenize(sent, stop_rule=stop_rule)
                 if tokens:
                     # Keep track of starting token candidates.
-                    start_token = tokens[0]
+                    start_token = tuple(tokens[0:self.n])
                     self.knowledge[()][start_token] = self.knowledge[()].get(start_token, 0) + 1
 
                     # Example, where ngram_size=3:
@@ -174,11 +174,16 @@ class Markov():
 
             # Update the prev tokens,
             # truncating if necessary.
-            self.prev += (next_token,)
+            if type(next_token) is tuple:
+                self.prev += next_token
+                tokens += list(next_token)
+            else:
+                self.prev += (next_token,)
+                tokens.append(next_token)
+
+
             if len(self.prev) > self.n:
                 self.prev = self.prev[1:]
-
-            tokens.append(next_token)
 
         # If the constraint is violated, retry.
         if not constraint(tokens):

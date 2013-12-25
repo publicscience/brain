@@ -37,7 +37,7 @@ class MarkovTest(unittest.TestCase):
         # Test ignoring RT and @ mentions.
         tweet =  ' '.join(['RT', self.doc, '@foo'])
         expected = {
-                (): {'hey': 1},
+                (): {('hey', 'this', 'is'): 1},
                 ('is', 'a', 'test'): {'<STOP>': 1},
                 ('hey', 'this', 'is'): {'a': 1},
                 ('this', 'is', 'a'): {'test': 1}
@@ -48,7 +48,7 @@ class MarkovTest(unittest.TestCase):
 
     def test_train_accumulates(self):
         expected = {
-                (): {'hey': 2},
+                (): {('hey', 'this', 'is'): 2},
                 ('is', 'a', 'test'): {'<STOP>': 2},
                 ('hey', 'this', 'is'): {'a': 2},
                 ('this', 'is', 'a'): {'test': 2}
@@ -120,17 +120,17 @@ class MarkovTest(unittest.TestCase):
     def test_next_token_insufficient_previous_tokens(self):
         self.m.knowledge = {
                 (): {
-                    'pal': 1
+                    ('pal',): 1
                 }
         }
         self.m.prev = ('why',)
-        self.assertEqual(self.m._next_token(), 'pal')
+        self.assertEqual(self.m._next_token(), ('pal',))
 
     def test_generate(self):
         self.m = Markov(ramble=False, ngram_size=3, filepath=test_filepath)
         self.m.knowledge = {
                 (): {
-                    'hello': 1
+                    ('hello',): 1
                 },
                 ('hello', 'hello', 'hello'): {
                     'goodbye': 1
@@ -178,7 +178,7 @@ class MarkovTest(unittest.TestCase):
     def test_generate_under_max_chars_fallsback_to_truncation_strategy(self):
         self.m.knowledge = {
                 (): {
-                    'hello': 1
+                    ('hello',): 1
                 },
                 ('hello', 'hello', 'hello'): {
                     'goodbye': 1
