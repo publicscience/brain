@@ -5,12 +5,32 @@ from os import getcwd, path
 __location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
 
 class Markov():
-    def __init__(self, ngram_size=1, stop_token='<STOP>', max_chars=140, ramble=True, filepath=path.join(__location__, 'markov.pickle')):
+    def __init__(self, ngram_size=1, max_chars=140, ramble=True, spasm=0.05, filepath=path.join(__location__, 'markov.pickle')):
+        """
+        ngram_size
+        Size of ngrams to use for knowledge. on smaller datasets, a value of 1 is recommended,
+        you will get more incoherent blabber, but things won't stop short.
+        If you have a large dataset, use a value like 2 or 3. More data at this ngram size means higher quality.
+
+        max_chars
+        Maximum characters the generated speech should be under.
+
+        ramble
+        Whether or not to randomly pick a next token if the generator gets stuck.
+
+        spasm
+        The probability of "spasming", that is, picking a random token as the next token.
+        This can make things more interesting!
+
+        filepath
+        Where to save/load the Markov to/from.
+        """
         self.n = ngram_size
-        self.stop_token = stop_token
         self.max_chars = max_chars
         self.ramble = ramble
         self.filepath = filepath
+        self.spasm = spasm
+        self.stop_token = '<STOP>'
 
         self.knowledge = self.load()
 
@@ -239,11 +259,14 @@ class Markov():
         been enconutered before. In which case, if self.ramble is True,
         pick a random starting token, otherwise, just end return None.
         """
-        try:
-            return self._weighted_choice(self.knowledge[self.prev])
-        except KeyError:
-            if len(self.prev) < self.n or self.ramble:
-                return self._weighted_choice(self.knowledge[()])
+        if random.random() < self.spasm:
+            return self._weighted_choice(self.knowledge[()])
+        else:
+            try:
+                return self._weighted_choice(self.knowledge[self.prev])
+            except KeyError:
+                if len(self.prev) < self.n or self.ramble:
+                    return self._weighted_choice(self.knowledge[()])
 
     def _weighted_choice(self, choices):
         """

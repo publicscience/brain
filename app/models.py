@@ -59,6 +59,7 @@ class Config(db.Document):
     # Some brain configuration.
     ngram_size = db.IntField(required=True, default=1)
     ramble = db.BooleanField(default=True)
+    spasm = db.FloatField(required=True, default=0.05)
 
     meta = {
             'max_documents': 1

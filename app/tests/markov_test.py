@@ -5,7 +5,7 @@ test_filepath = 'app/tests/markov.pickle'
 
 class MarkovTest(unittest.TestCase):
     def setUp(self):
-        self.m = Markov(ngram_size=3, filepath=test_filepath, ramble=True, max_chars=140)
+        self.m = Markov(ngram_size=3, filepath=test_filepath, ramble=True, max_chars=140, spasm=0.0)
         self.doc = 'hey this is a test?'
 
     def tearDown(self):

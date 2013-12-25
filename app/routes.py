@@ -111,9 +111,10 @@ class ConfigAPI(MethodView):
             form.populate_obj(config)
 
             # Need to reload the brain.
-            if form.ramble.data != brain.MKV.ramble:
-                logger.info('Brain ramble value changed!')
+            if form.ramble.data != brain.MKV.ramble or form.spasm.data != brain.MKV.spasm:
+                logger.info('Brain config value changed!')
                 brain.MKV.ramble = form.ramble.data
+                brain.MKV.spasm = form.spasm.data
 
             # If the ngram size has changed,
             # the brain needs to be retrained.
