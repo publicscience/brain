@@ -7,6 +7,7 @@
     <div class="it-speaketh">{{ speech }}</div>
 
     <form action="" method="post">
+        {{ form.csrf_token }}
         <textarea name="tweet" id="tweet" style="display:none;">{{ speech }}</textarea>
         <div class="actions">
             <input type="submit" value="Twitter this!">
