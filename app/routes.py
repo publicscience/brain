@@ -21,7 +21,7 @@ def generate():
 
 @app.route('/status')
 def status():
-    return render_template('status.html', tweets=Tweet.objects.count())
+    return render_template('status.html', tweets=Tweet.objects.count(), docs=Doc.objects.count(), muses=Muse.objects.count())
 
 @app.errorhandler(404)
 def internal_error(error):
