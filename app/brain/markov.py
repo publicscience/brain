@@ -32,6 +32,10 @@ class Markov():
         self.spasm = spasm
         self.stop_token = '<STOP>'
 
+        # For limiting recursion-generating of new speech.
+        self.max_retries = 100
+        self.retries = 0
+
         self.knowledge = self.load()
 
         if self.knowledge is None:
@@ -178,6 +182,9 @@ class Markov():
         Generate some 'speech'.
         """
 
+        # Reset the previous tokens.
+        self.prev = ()
+
         tokens = []
 
         def constraint(tokens):
@@ -205,20 +212,24 @@ class Markov():
             if len(self.prev) > self.n:
                 self.prev = self.prev[1:]
 
-        # If the constraint is violated, retry.
+        # If the constraint is violated, try consolidating.
         if not constraint(tokens):
             full = tokens
             consolidated = self._consolidate(tokens)
 
             if not consolidated:
-                # Just pop off the last token and call it a day.
-                tokens = full[:-1]
+                # Try to generate a new string.
+                if self.retries < self.max_retries:
+                    self.retries += 1
+                    tokens = self.generate().split(' ')
+                else:
+                    # If this max retries has been hit,
+                    # just drop the last token.
+                    tokens = full[:-1]
             else:
                 tokens = consolidated
 
-        # Reset the previous tokens.
-        self.prev = ()
-
+        self.retries = 0
         return ' '.join(tokens)
 
     def _consolidate(self, tokens):
