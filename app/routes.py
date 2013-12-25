@@ -1,10 +1,13 @@
 from flask import Blueprint, render_template, redirect, request, url_for, jsonify, flash
 from flask.views import MethodView
 from flask.ext.mongoengine.wtf import model_form
-from app import app
+from app import app, brain
 from app.models import Muse, Tweet, Config, Doc
 from app.auth import requires_auth
-from app.brain import MKV
+
+# Logging
+from app.logger import logger
+logger = logger(__name__)
 
 # Landing page
 @app.route('/')
@@ -14,7 +17,7 @@ def index():
 
 @app.route('/generate')
 def generate():
-    return render_template('generate.html', speech=MKV.generate())
+    return render_template('generate.html', speech=brain.MKV.generate())
 
 @app.route('/status')
 def status():
@@ -106,6 +109,19 @@ class ConfigAPI(MethodView):
 
         if form.validate():
             form.populate_obj(config)
+
+            # Need to reload the brain.
+            if form.ramble.data != brain.MKV.ramble:
+                logger.info('Brain ramble value changed!')
+                brain.MKV.ramble = form.ramble.data
+
+            # If the ngram size has changed,
+            # the brain needs to be retrained.
+            if form.ngram_size.data != brain.MKV.n:
+                logger.info('Brain ngram size changed! Retraining...')
+                brain.MKV.n = form.ngram_size.data
+                brain.retrain()
+
             config.save()
             return redirect(url_for('config_api'))
 
@@ -129,7 +145,7 @@ class DocAPI(MethodView):
             doc = Doc()
             form.populate_obj(doc)
             doc.save()
-            MKV.train([form.body.data])
+            brain.MKV.train([form.body.data])
             flash('I\'m learning!')
             return redirect(url_for('doc_api'))
 

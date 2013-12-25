@@ -31,6 +31,17 @@ class Muse(db.Document):
 class Config(db.Document):
     """
     Configuration for the Brain.
+
+    If you make changes to this model,
+    you will need to drop the saved record
+    in the database.
+
+    $ mongo
+    > show dbs
+    > use <your db>
+    > db.config.drop()
+
+    Then restart the application.
     """
 
     # Retweet probability threshold.
@@ -44,6 +55,10 @@ class Config(db.Document):
     # Maximum amount of retweets in an interval.
     # Cause sometimes it accidentally retweets a TON of stuff.
     max_retweets = db.IntField(required=True, default=10)
+
+    # Some brain configuration.
+    ngram_size = db.IntField(required=True, default=1)
+    ramble = db.BooleanField(default=True)
 
     meta = {
             'max_documents': 1

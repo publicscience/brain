@@ -14,7 +14,7 @@ logger = logger(__name__)
 # Loaded here so we can keep it in memory.
 # accessible via app.brain.CLS or app.brain.MKV
 CLS = Classifier()
-MKV = Markov(ramble=False)
+MKV = Markov(ramble=config().ramble, ngram_size=config().ngram_size)
 
 def ponder():
     """
@@ -75,8 +75,11 @@ def retrain():
     Retrains the Markov generator on the documents in the database.
     """
     MKV.reset()
-    MKV.train(Twitter.objects.all())
-    MKV.train(Doc.objects.all())
+    tweets = [tweet.body for tweet in Tweet.objects.all()]
+    MKV.train(tweets)
+
+    docs = [doc.body for doc in Doc.objects.all()]
+    MKV.train(docs)
 
 
 def _process_muse(muse):
