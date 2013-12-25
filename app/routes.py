@@ -123,6 +123,7 @@ class ConfigAPI(MethodView):
                 brain.retrain()
 
             config.save()
+            flash('I will change my ways.')
             return redirect(url_for('config_api'))
 
         return redirect(url_for('config_api'))
