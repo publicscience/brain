@@ -159,7 +159,7 @@ class Markov():
         which should return True if a token should be stopped on.
         """
         tokens = []
-        punctuation = string.punctuation.replace('@', '') + '“”‘’–'
+        punctuation = string.punctuation.replace('@', '') + '“”‘’–"'
 
         for token in doc.split(' '):
             # This saves memory by having

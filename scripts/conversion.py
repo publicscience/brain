@@ -3,7 +3,7 @@
 import re
 from app import brain
 
-punc = '“”‘’–.'
+punc = '“”‘’–."'
 
 def merge_count_dicts(x, y):
     """
