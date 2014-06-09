@@ -18,6 +18,12 @@ Clone repo and then install dependencies:
 $ git clone https://github.com/publicscience/brain.git
 $ cd brain
 $ pip install -r requirements.txt
+$ python -m nltk.downloader punkt
+```
+
+Note that you may need to install `numpy` first:
+```
+$ pip install numpy
 ```
 
 Setup Flask configuration:
