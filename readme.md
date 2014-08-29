@@ -78,3 +78,11 @@ Dev Notes
 line 225 has a Python 3 incompatibility.
 It uses iteritems(), it should be items().
 ```
+
+Crontab example
+===============
+
+```
+0 * * * *  cd /srv/brain; /env/brain/bin/python -c "from app.brain import ponder; ponder()"
+30 * * * *  cd /srv/brain; /env/brain/bin/python -c "from app.brain import consider; consider()"
+```
