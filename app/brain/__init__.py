@@ -3,7 +3,7 @@ from app.brain.classifier import Classifier
 from app.brain.markov import Markov
 from app.models import Muse, Tweet, Doc
 from app.config import config
-from mongoengine.errors import NotUniqueError
+from mongoengine.errors import NotUniqueError, OperationError
 from pymongo.errors import DuplicateKeyError
 import random
 
@@ -103,7 +103,7 @@ def _process_muse(muse):
         try:
             t.save()
             new_tweets.append(tweet)
-        except (NotUniqueError, DuplicateKeyError):
+        except (NotUniqueError, DuplicateKeyError, OperationError):
             # Duplicate tweet
             pass
     return new_tweets
