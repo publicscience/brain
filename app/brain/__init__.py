@@ -41,9 +41,6 @@ def ponder():
     for muse in Muse.objects(negative=True):
         neg += _process_muse(muse)
 
-    # Combine the new tweets.
-    new_tweets = pos_txts + neg_txts
-
     # Extract the tweet contents into lists.
     pos_txts = _get_tweet_texts(pos)
     neg_txts = _get_tweet_texts(neg)
@@ -53,6 +50,9 @@ def ponder():
 
     # See if there's anything to retweet.
     _consider_retweets(pos)
+
+    # Combine the new tweets.
+    new_tweets = postxts + neg_txts
 
     # Update the classifier and markov.
     logger.info('Collected %s new tweets, training...' % len(new_tweets))
