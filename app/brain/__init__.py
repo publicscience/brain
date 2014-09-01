@@ -4,6 +4,7 @@ from app.brain.markov import Markov
 from app.models import Muse, Tweet, Doc
 from app.config import config
 from mongoengine.errors import NotUniqueError
+from pymongo.errors import DuplicateKeyError
 import random
 
 # Logging
@@ -102,7 +103,7 @@ def _process_muse(muse):
         try:
             t.save()
             new_tweets.append(tweet)
-        except NotUniqueError:
+        except NotUniqueError, DuplicateKeyError:
             # Duplicate tweet
             pass
     return new_tweets
