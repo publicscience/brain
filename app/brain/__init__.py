@@ -3,8 +3,11 @@ from app.brain.classifier import Classifier
 from app.brain.markov import Markov
 from app.models import Muse, Tweet, Doc
 from app.config import config
+
+from tweepy.error import TweepError
 from mongoengine.errors import NotUniqueError, OperationError
 from pymongo.errors import DuplicateKeyError
+
 import random
 
 # Logging
@@ -91,7 +94,12 @@ def _process_muse(muse):
     """
     username = muse.username
     logger.info('Collecting tweets for %s...' % username)
-    tweets = twitter.tweets(username=username)
+
+    try:
+        tweets = twitter.tweets(username=username)
+    except TweepError:
+        return []
+
     new_tweets = []
     for tweet in tweets:
         data = {
