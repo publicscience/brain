@@ -52,7 +52,7 @@ def ponder():
     _consider_retweets(pos)
 
     # Combine the new tweets.
-    new_tweets = postxts + neg_txts
+    new_tweets = pos_txts + neg_txts
 
     # Update the classifier and markov.
     logger.info('Collected %s new tweets, training...' % len(new_tweets))
