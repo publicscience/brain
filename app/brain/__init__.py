@@ -103,7 +103,7 @@ def _process_muse(muse):
         try:
             t.save()
             new_tweets.append(tweet)
-        except NotUniqueError, DuplicateKeyError:
+        except (NotUniqueError, DuplicateKeyError):
             # Duplicate tweet
             pass
     return new_tweets
