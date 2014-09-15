@@ -87,6 +87,12 @@ def retrain():
     logger.info('Training on %s docs' % len(docs))
     MKV.train(docs)
 
+def train(docs):
+    """
+    Bulk train the brain with docs.
+    These docs are not saved to the db!
+    """
+    MKV.train(docs)
 
 
 
