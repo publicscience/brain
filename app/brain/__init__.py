@@ -81,6 +81,12 @@ def retrain():
     docs = [doc.body for doc in Doc.objects.all()]
     MKV.train(docs)
 
+def train(docs):
+    """
+    Bulk train the brain with docs.
+    These docs are not saved to the db!
+    """
+    MKV.train(docs)
 
 def _process_muse(muse):
     """
