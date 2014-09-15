@@ -80,10 +80,14 @@ def retrain():
     """
     MKV.reset()
     tweets = [tweet.body for tweet in Tweet.objects.all()]
+    logger.info('Training on %s tweets' % len(tweets))
     MKV.train(tweets)
 
     docs = [doc.body for doc in Doc.objects.all()]
+    logger.info('Training on %s docs' % len(docs))
     MKV.train(docs)
+
+
 
 
 def _process_muse(muse):
