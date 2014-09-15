@@ -3,7 +3,11 @@ from app.brain.classifier import Classifier
 from app.brain.markov import Markov
 from app.models import Muse, Tweet, Doc
 from app.config import config
-from mongoengine.errors import NotUniqueError
+
+from tweepy.error import TweepError
+from mongoengine.errors import NotUniqueError, OperationError
+from pymongo.errors import DuplicateKeyError
+
 import random
 
 # Logging
@@ -37,9 +41,6 @@ def ponder():
     for muse in Muse.objects(negative=True):
         neg += _process_muse(muse)
 
-    # Combine the new tweets.
-    new_tweets = pos_txts + neg_txts
-
     # Extract the tweet contents into lists.
     pos_txts = _get_tweet_texts(pos)
     neg_txts = _get_tweet_texts(neg)
@@ -49,6 +50,9 @@ def ponder():
 
     # See if there's anything to retweet.
     _consider_retweets(pos)
+
+    # Combine the new tweets.
+    new_tweets = pos_txts + neg_txts
 
     # Update the classifier and markov.
     logger.info('Collected %s new tweets, training...' % len(new_tweets))
@@ -96,7 +100,12 @@ def _process_muse(muse):
     """
     username = muse.username
     logger.info('Collecting tweets for %s...' % username)
-    tweets = twitter.tweets(username=username)
+
+    try:
+        tweets = twitter.tweets(username=username)
+    except TweepError:
+        return []
+
     new_tweets = []
     for tweet in tweets:
         data = {
@@ -108,7 +117,7 @@ def _process_muse(muse):
         try:
             t.save()
             new_tweets.append(tweet)
-        except NotUniqueError:
+        except (NotUniqueError, DuplicateKeyError, OperationError):
             # Duplicate tweet
             pass
     return new_tweets

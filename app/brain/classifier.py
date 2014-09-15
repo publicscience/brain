@@ -42,10 +42,11 @@ class Classifier():
         Updates the classifier with new training data.
         By default, saves the updated classifier as well.
         """
-        training = self.vectorizer.fit_transform(docs)
-        self.clf.partial_fit(training, labels, [0,1])
-        if save:
-            self.save()
+        if docs:
+            training = self.vectorizer.fit_transform(docs)
+            self.clf.partial_fit(training, labels, [0,1])
+            if save:
+                self.save()
 
     def classify(self, docs):
         """
