@@ -1,9 +1,14 @@
 import json
 from app.brain import train
 
-f = open('~/sliced_articles_BIG.json', 'r')
-data = json.load(f)
+#f = open('/Users/ftseng/Desktop/articles.json', 'r')
+#data = json.load(f)
+#docs = [article['text'] for article in data]
 
-docs = [article['text'] for article in data]
-print(docs)
+
+#f = open('/Users/ftseng/Downloads/text datasets/imdb_plots.puretext.json', 'r')
+#docs = json.load(f)
+
+print(len(docs))
+
 #train(docs)

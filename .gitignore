@@ -13,3 +13,4 @@ config.py
 markov.pickle
 classifier.pickle
 log.log
+db/
