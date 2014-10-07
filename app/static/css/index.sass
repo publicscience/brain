@@ -120,19 +120,23 @@ label
     background-position: center center
     z-index: -2
 
-.teh_brain
+.teh_brain, .find_me_on_twitter
     border-bottom: none
     text-align: center
     font-style: italic
-    color: yellow
     text-shadow: 1px 1px 0px rgba(0,0,0,0.2)
     position: absolute
-    top: 0
     left: 0
     right: 0
-    bottom: 0
-    font-size: 4em
     z-index: 10
+
+.teh_brain
+    color: yellow
+    font-size: 4em
     display: block
+    bottom: 0
     top: 50%
     @include vendor(transform, translateY(-50%))
+a.find_me_on_twitter
+    bottom: 2em
+    color: #E6EBBA
