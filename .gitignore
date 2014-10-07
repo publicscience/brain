@@ -14,3 +14,4 @@ markov.pickle
 classifier.pickle
 log.log
 db/
+*.map
