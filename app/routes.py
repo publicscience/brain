@@ -14,7 +14,7 @@ logger = logger(__name__)
 @app.route('/')
 @app.route('/index')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', speech=brain.MKV.generate())
 
 @app.route('/generate')
 def generate():
